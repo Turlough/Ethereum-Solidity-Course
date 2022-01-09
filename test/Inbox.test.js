@@ -8,7 +8,7 @@ const web3 = new Web3(ganache.provider());
 const {interface, bytecode} = require('../compile');
 
 
-let accounts;
+//let accounts; // need not be global?
 let inbox;
 
 beforeEach(async () => {
@@ -21,7 +21,21 @@ beforeEach(async () => {
 });
 
 describe('Inbox', () => {
-    it('deploys a contract', () => {
-        console.log(inbox);
+
+    
+    it('prints the contract', () => { console.log(inbox); });
+
+    it('has an address', () => { assert.ok(inbox.options.address)});
+
+    it('initializes with a message', async () => {
+        const message = await inbox.methods.message().call();
+        assert.equal(message, 'Hi there!')
     });
+
+    it('can setMessage', async () => {
+        await inbox.methods.setMessage('set').send({from: accounts[0]});
+        const message = await inbox.methods.message().call();
+        assert.equal(message, 'set');
+    });
+
 });
